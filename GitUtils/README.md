@@ -1,4 +1,3 @@
-
 # Git Branch Manager
 
 A Python script to manage and delete Git branches both locally and remotely, with built-in protection for important branches like `master` and `main`.
@@ -6,8 +5,9 @@ A Python script to manage and delete Git branches both locally and remotely, wit
 ## Features
 
 - **List all branches** in a specified Git repository.
+- **Protected Branch Notification**: Automatically identifies and excludes protected branches (`master`, `main`, etc.) from deletion, clearly marking them as protected when branches are first listed.
+- **Unmerged Branch Notification**: Marks branches that are not fully merged into a specified base branch (e.g., `main` or `master`), allowing you to review them before deletion.
 - **Delete multiple branches** locally or both locally and remotely, based on user input.
-- **Exclude protected branches** like `master` and `main` from deletion automatically.
 - **Confirm branch deletions** and provide an option to force delete if permissions or protections prevent deletion.
 - **Handle missing remote branches gracefully**, printing messages if a branch doesn’t exist on the remote.
 
@@ -35,65 +35,27 @@ Run `main.py` using Python:
 python main.py
 ```
 
-### 3. Enter the Git Repository Path
+### 3. Enter the Git Repository Path and Base Branch
 
-When prompted, enter the path to the Git repository where you want to manage branches. This must be a valid Git repository (it should contain a `.git` folder).
+When prompted, enter the path to the Git repository where you want to manage branches. This must be a valid Git repository (it should contain a `.git` folder). Then specify the base branch (e.g., `main`) to check for merged status.
 
 ### 4. List and Delete Branches
 
 The script will automatically:
 
 1. **List all branches** in the specified repository.
-2. **Exclude protected branches** (like `master` and `main`) from deletion, with a clear message that these branches are protected.
-3. **Ask for confirmation** to delete either all listed branches or specific branches that you choose.
-4. **Provide an option** to delete branches from the remote repository as well as locally.
+2. **Indicate Protected Branches**: Protected branches (`master`, `main`) will be clearly marked as “protected” and excluded from any deletion.
+3. **Mark Unmerged Branches**: Branches not fully merged into the specified base branch will be marked as “not fully merged” for easy identification.
+4. **Ask for confirmation** to delete either all non-protected branches or allow you to select specific branches for deletion.
+5. **Provide an option** to delete branches from the remote repository as well as locally.
 
 ### Example Workflow
 
-1. The script lists all branches in your repository.
-2. Protected branches (`master`, `main`) are excluded from deletion with a message in the console.
-3. The user is prompted to delete all remaining branches or select specific branches.
-4. The user confirms whether to delete locally only or also delete from the remote.
-5. If a remote deletion fails due to permissions, the script will prompt for a force deletion.
-
-### Example Output
-
-```plaintext
-Enter the path to the Git repository: /path/to/repo
-Available branches:
-  * feature-1
-  * feature-2
-  * master
-Protected branch 'master' is excluded from deletion and will not be deleted.
-
-Do you want to delete all listed branches? (y/n): n
-Enter the branches you want to delete (comma-separated): feature-1, feature-2
-Do you also want to delete these branches from the remote? (y/n): y
-Deleting local branch: feature-1
-Deleted local branch: feature-1
-Deleting remote branch: feature-1
-Deleted remote branch: feature-1
-Branch deletion process completed.
-```
-
-## Important Notes
-
-- **Protected Branches**: `master` and `main` branches are protected by default and will not be deleted.
-- **Force Deletion**: If a remote branch is protected or otherwise restricted, you’ll be prompted with an option to force delete the branch.
-- **Remote Existence Check**: The script checks if a branch exists on the remote before attempting deletion, providing a message if the branch is missing.
-
-## Customization
-
-You can add more branches to the list of protected branches by editing `git_branch_manager.py`:
-
-```python
-PROTECTED_BRANCHES = {"master", "main", "develop", "staging"}
-```
-
-This will exclude any branch in `PROTECTED_BRANCHES` from being deleted.
-
-## Contributing
-
-Feel free to open issues or submit pull requests to add new features or fix any issues.
-
----
+1. The script lists all branches in your repository, marking protected branches and branches that are not fully merged as follows:
+   ```plaintext
+   master (protected - will not be deleted)
+   feature-1 (not fully merged into main)
+   feature-2
+   ```
+2. You can then confirm deletion for all non-protected branches or specify particular branches for deletion.
+3. The script will then confirm if you want to delete only locally or also remotely.
