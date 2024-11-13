@@ -1,6 +1,6 @@
 # Git Branch Manager
 
-A Python script to manage and delete Git branches both locally and remotely, with built-in protection for important branches like `master` and `main`.
+A Python script to manage and delete Git branches both locally and remotely, with built-in protection for important branches like `master` and `main`. This script includes options to prune stale branches and force-delete specific branches in a loop until all targeted branches are removed.
 
 ## Features
 
@@ -8,7 +8,8 @@ A Python script to manage and delete Git branches both locally and remotely, wit
 - **Protected Branch Notification**: Automatically identifies and excludes protected branches (`master`, `main`, etc.) from deletion, clearly marking them as protected when branches are first listed.
 - **Unmerged Branch Notification**: Marks branches that are not fully merged into a specified base branch (e.g., `main` or `master`), allowing you to review them before deletion.
 - **Delete multiple branches** locally or both locally and remotely, based on user input.
-- **Confirm branch deletions** and provide an option to force delete if permissions or protections prevent deletion.
+- **Prune stale remote branches** after deletion to ensure your branch list is up-to-date.
+- **Force delete specific branches** repeatedly in a loop until you decide to stop, with options for local and remote force deletion.
 - **Handle missing remote branches gracefully**, printing messages if a branch doesn’t exist on the remote.
 
 ## Setup
@@ -59,3 +60,54 @@ The script will automatically:
    ```
 2. You can then confirm deletion for all non-protected branches or specify particular branches for deletion.
 3. The script will then confirm if you want to delete only locally or also remotely.
+4. **Prune stale branches**: After the main deletion process, the script will ask if you want to prune any stale branches. If selected, this will clean up outdated remote references and display an updated branch list.
+
+### 5. Force Delete Specific Branches (Optional)
+
+After pruning stale branches, the script will prompt you to force delete specific branches, allowing you to delete branches until you decide to stop.
+
+- The script will continue asking if you want to force delete another branch.
+- For each branch, you’ll have the option to delete it locally, remotely, or both.
+- The process continues until you respond with "no" when asked if you want to delete another branch.
+
+### Example Force Delete Workflow
+
+```plaintext
+Would you like to force delete a specific branch? (y/n): y
+Enter the name of the branch you want to force delete: feature-1
+Do you also want to force delete this branch from the remote? (y/n): y
+Force-deleted local branch: feature-1
+Force-deleted remote branch: feature-1
+
+Would you like to force delete a specific branch? (y/n): y
+Enter the name of the branch you want to force delete: feature-2
+Do you also want to force delete this branch from the remote? (y/n): n
+Force-deleted local branch: feature-2
+
+Would you like to force delete a specific branch? (y/n): n
+Finished force-deleting branches.
+```
+
+## Important Notes
+
+- **Protected Branches**: `master` and `main` branches are protected by default and will not be deleted.
+- **Force Deletion**: You can repeatedly force delete specific branches, which is useful for handling branches with deletion restrictions.
+- **Remote Existence Check**: The script checks if a branch exists on the remote before attempting deletion, providing a message if the branch is missing.
+
+## Customization
+
+You can add more branches to the list of protected branches by editing `git_branch_manager.py`:
+
+```python
+PROTECTED_BRANCHES = {"master", "main", "develop", "staging"}
+```
+
+This will exclude any branch in `PROTECTED_BRANCHES` from being deleted.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+Feel free to open issues or submit pull requests to add new features or fix any issues.
